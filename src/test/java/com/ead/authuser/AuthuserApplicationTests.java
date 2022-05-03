@@ -1,10 +1,10 @@
-package com.ead.authuserservices;
+package com.ead.authuser;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AuthuserServicesApplicationTests {
+class AuthuserApplicationTests {
 
     @Test
     void contextLoads() {

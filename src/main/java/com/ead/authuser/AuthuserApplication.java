@@ -1,13 +1,13 @@
-package com.ead.authuserservices;
+package com.ead.authuser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AuthuserServicesApplication {
+public class AuthuserApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthuserServicesApplication.class, args);
+        SpringApplication.run(AuthuserApplication.class, args);
     }
 
 }
