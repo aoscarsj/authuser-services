@@ -14,6 +14,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @Getter
@@ -41,8 +42,8 @@ public class UserModel implements Serializable {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserType userType;
     @Column(length = 20)
     private String phoneNumber;
@@ -52,8 +53,8 @@ public class UserModel implements Serializable {
     private String imageUrl;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDate = LocalDateTime.now(ZoneId.of("UTC"));
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime lastUpdateDate;
+    private LocalDateTime lastUpdateDate = LocalDateTime.now(ZoneId.of("UTC"));
 }
