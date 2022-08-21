@@ -4,6 +4,7 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +35,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserModel userModel) {
+    public void insert(UserModel userModel) {
+
+        validateUser(userModel);
         userRepository.save(userModel);
+    }
+
+    private void validateUser(UserModel userModel) {
+
+        if(userModel.getUsername() == null || userModel.getUsername().trim().isEmpty() || userModel.getUsername().contains(" "))
+            throw new RestClientException("Error: invalid username");
+        if(userModel.getUsername().length() < 4 || userModel.getUsername().length() > 50)
+            throw new RestClientException("Error: username cannot be less than 4 characters");
+        if(!userModel.getEmail().matches("[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) //RFC 5322
+            throw new RestClientException("Error: invalid email");
+        if(userModel.getPassword().length() < 8 || userModel.getPassword().length() > 20)
+            throw new RestClientException("Error: password cannot be less than 8 characters");
+        if(userModel.getImageUrl().length() == 0)
+            throw new RestClientException("Error: image url cannot be empty" );
     }
 
     @Override

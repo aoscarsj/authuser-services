@@ -6,7 +6,9 @@ import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -51,7 +53,8 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable(value = "userId") UUID userId,
-                                             @RequestBody @JsonView(UserDto.UserView.UserPut.class) UserDto userDto) {
+                                             @RequestBody @Validated(UserDto.UserView.UserPut.class)
+                                             @JsonView(UserDto.UserView.UserPut.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (userModelOptional.isEmpty())
@@ -62,15 +65,20 @@ public class UserController {
         userModel.setCpf(userDto.getCpf());
         userModel.setPhoneNumber(userDto.getPhoneNumber());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userService.save(userModel);
+
+        try {
+            userService.insert(userModel);
+        }catch (RestClientException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(userModel);
-
     }
 
     @PutMapping("/{userId}/password")
     public ResponseEntity<String> updatePassword(@PathVariable(value = "userId") UUID userId,
-                                                 @RequestBody @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
+                                                 @RequestBody @Validated(UserDto.UserView.PasswordPut.class)
+                                                 @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (userModelOptional.isEmpty())
@@ -82,15 +90,20 @@ public class UserController {
 
         userModel.setPassword(userDto.getPassword());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userService.save(userModel);
+
+        try {
+            userService.insert(userModel);
+        }catch (RestClientException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully.");
-
     }
 
     @PutMapping("/{userId}/image")
     public ResponseEntity<String> updateImage(@PathVariable(value = "userId") UUID userId,
-                                              @RequestBody @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
+                                              @RequestBody @Validated(UserDto.UserView.ImagePut.class)
+                                              @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
 
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (userModelOptional.isEmpty())
@@ -99,11 +112,13 @@ public class UserController {
         var userModel = userModelOptional.get();
         userModel.setImageUrl(userDto.getImageUrl());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userService.save(userModel);
+
+        try {
+            userService.insert(userModel);
+        }catch (RestClientException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body("Image updated successfully.");
-
     }
-
 }
-
